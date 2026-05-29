@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "TM28c1siQY-qJL15HsYKY"
+uri = "file://artifacts/flake/assets/images/icon.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "TL2A9lhNoNWiJKsNNSOXb"
+uri = "file://artifacts/flake/assets/images/profile1.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "WzxchCS0X5Jh6dC9WFBzw"
+uri = "file://artifacts/flake/assets/images/profile2.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "UHu_dwP1s3Aqa21JzZFzi"
+uri = "file://artifacts/flake/assets/images/profile3.png"
+type = "image"
+title = "generated_image"
