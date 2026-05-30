@@ -1,10 +1,12 @@
+import type { ImageSourcePropType } from "react-native";
+
 export interface Profile {
   id: string;
   name: string;
   age: number;
   bio: string;
   interests: string[];
-  photo: ReturnType<typeof require>;
+  photo: ImageSourcePropType;
   distance: string;
   online: boolean;
 }
@@ -13,7 +15,7 @@ export interface Message {
   id: string;
   senderId: string;
   senderName: string;
-  senderPhoto: ReturnType<typeof require>;
+  senderPhoto: ImageSourcePropType;
   type: "text" | "voice" | "image" | "imagecard";
   content: string;
   caption?: string;
@@ -28,7 +30,7 @@ export interface Group {
   online: number;
   category: string;
   description: string;
-  photo?: ReturnType<typeof require>;
+  photo?: ImageSourcePropType;
 }
 
 export interface Conversation {
