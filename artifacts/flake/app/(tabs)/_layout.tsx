@@ -1,127 +1,98 @@
-import { BlurView } from "expo-blur";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { Tabs } from "expo-router";
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
-import { SymbolView } from "expo-symbols";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { Platform, StyleSheet, View, useColorScheme } from "react-native";
-import { useColors } from "@/hooks/useColors";
+import { Platform, StyleSheet, View, TouchableOpacity } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-function NativeTabLayout() {
-  return (
-    <NativeTabs>
-      <NativeTabs.Trigger name="index">
-        <Icon sf={{ default: "flame", selected: "flame.fill" }} />
-        <Label>Discover</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="groups">
-        <Icon sf={{ default: "person.2", selected: "person.2.fill" }} />
-        <Label>Groups</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="messages">
-        <Icon sf={{ default: "bubble.left.and.bubble.right", selected: "bubble.left.and.bubble.right.fill" }} />
-        <Label>Messages</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="profile">
-        <Icon sf={{ default: "person.circle", selected: "person.circle.fill" }} />
-        <Label>Profile</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
-  );
-}
+const PRIMARY = "#FF6247";
+const TAB_BG = "#111111";
+const INACTIVE = "#666666";
 
-function ClassicTabLayout() {
-  const colors = useColors();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const isIOS = Platform.OS === "ios";
-  const isWeb = Platform.OS === "web";
+function TabBar({ state, descriptors, navigation }: any) {
   const insets = useSafeAreaInsets();
 
+  const icons: Record<string, { active: keyof typeof Ionicons.glyphMap; inactive: keyof typeof Ionicons.glyphMap }> = {
+    index:    { active: "heart",         inactive: "heart-outline" },
+    groups:   { active: "people",        inactive: "people-outline" },
+    home:     { active: "home",          inactive: "home-outline" },
+    messages: { active: "chatbubble",    inactive: "chatbubble-outline" },
+    profile:  { active: "person",        inactive: "person-outline" },
+  };
+
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.mutedForeground,
-        tabBarStyle: {
-          position: "absolute",
-          backgroundColor: isIOS ? "transparent" : colors.background,
-          borderTopWidth: isWeb ? 1 : StyleSheet.hairlineWidth,
-          borderTopColor: colors.border,
-          elevation: 0,
-          paddingBottom: isWeb ? 0 : insets.bottom,
-          ...(isWeb ? { height: 84 } : {}),
-        },
-        tabBarBackground: () =>
-          isIOS ? (
-            <BlurView
-              intensity={95}
-              tint={isDark ? "dark" : "light"}
-              style={StyleSheet.absoluteFill}
-            />
-          ) : isWeb ? (
-            <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background }]} />
-          ) : null,
-      }}
+    <View
+      style={[
+        styles.tabBar,
+        { paddingBottom: Platform.OS === "web" ? 10 : insets.bottom + 4 },
+      ]}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Discover",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="flame.fill" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="flame" size={24} color={color} />
-            ),
-        }}
-      />
-      <Tabs.Screen
-        name="groups"
-        options={{
-          title: "Groups",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="person.2.fill" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="people" size={24} color={color} />
-            ),
-        }}
-      />
-      <Tabs.Screen
-        name="messages"
-        options={{
-          title: "Messages",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="bubble.left.and.bubble.right.fill" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="chatbubbles" size={24} color={color} />
-            ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color }) =>
-            isIOS ? (
-              <SymbolView name="person.circle.fill" tintColor={color} size={24} />
-            ) : (
-              <Ionicons name="person-circle" size={24} color={color} />
-            ),
-        }}
-      />
-    </Tabs>
+      {state.routes.map((route: any, index: number) => {
+        const isFocused = state.index === index;
+        const icon = icons[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
+
+        const onPress = () => {
+          const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            style={styles.tabItem}
+            onPress={onPress}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
+              <Ionicons
+                name={isFocused ? icon.active : icon.inactive}
+                size={22}
+                color={isFocused ? PRIMARY : INACTIVE}
+              />
+            </View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
   );
 }
 
 export default function TabLayout() {
-  if (isLiquidGlassAvailable()) {
-    return <NativeTabLayout />;
-  }
-  return <ClassicTabLayout />;
+  return (
+    <Tabs
+      tabBar={(props) => <TabBar {...props} />}
+      screenOptions={{ headerShown: false }}
+    >
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="groups" />
+      <Tabs.Screen name="home" />
+      <Tabs.Screen name="messages" />
+      <Tabs.Screen name="profile" />
+    </Tabs>
+  );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    flexDirection: "row",
+    backgroundColor: TAB_BG,
+    paddingTop: 10,
+    borderTopWidth: 0,
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  iconWrap: {
+    width: 44,
+    height: 36,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 18,
+  },
+  iconWrapActive: {
+    backgroundColor: "rgba(255,98,71,0.15)",
+  },
+});

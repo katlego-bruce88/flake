@@ -9,12 +9,10 @@ import {
   PanResponder,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { InterestTags } from "./InterestTags";
 import { Profile } from "@/types";
-import { useColors } from "@/hooks/useColors";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const CARD_HEIGHT = SCREEN_HEIGHT * 0.62;
+const CARD_HEIGHT = SCREEN_HEIGHT * 0.58;
 const SWIPE_THRESHOLD = 100;
 
 interface ProfileCardProps {
@@ -25,12 +23,11 @@ interface ProfileCardProps {
 }
 
 export function ProfileCard({ profile, onLike, onPass, isTop }: ProfileCardProps) {
-  const colors = useColors();
   const pan = useRef(new Animated.ValueXY()).current;
 
   const rotate = pan.x.interpolate({
     inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-    outputRange: ["-8deg", "0deg", "8deg"],
+    outputRange: ["-6deg", "0deg", "6deg"],
     extrapolate: "clamp",
   });
 
@@ -57,7 +54,7 @@ export function ProfileCard({ profile, onLike, onPass, isTop }: ProfileCardProps
         if (dx > SWIPE_THRESHOLD) {
           Animated.timing(pan, {
             toValue: { x: SCREEN_WIDTH * 1.5, y: 0 },
-            duration: 300,
+            duration: 280,
             useNativeDriver: true,
           }).start(() => {
             onLike();
@@ -66,7 +63,7 @@ export function ProfileCard({ profile, onLike, onPass, isTop }: ProfileCardProps
         } else if (dx < -SWIPE_THRESHOLD) {
           Animated.timing(pan, {
             toValue: { x: -SCREEN_WIDTH * 1.5, y: 0 },
-            duration: 300,
+            duration: 280,
             useNativeDriver: true,
           }).start(() => {
             onPass();
@@ -88,41 +85,34 @@ export function ProfileCard({ profile, onLike, onPass, isTop }: ProfileCardProps
       style={[
         styles.card,
         {
-          transform: [
-            { translateX: pan.x },
-            { translateY: pan.y },
-            { rotate },
-          ],
-          borderRadius: colors.radius,
+          transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate }],
         },
       ]}
       {...(isTop ? panResponder.panHandlers : {})}
     >
       <Image source={profile.photo} style={styles.photo} />
       <LinearGradient
-        colors={["transparent", "rgba(0,0,0,0.85)"]}
+        colors={["transparent", "rgba(0,0,0,0.18)", "rgba(0,0,0,0.72)"]}
         style={styles.gradient}
+        locations={[0, 0.4, 1]}
       />
 
-      {/* LIKE indicator */}
       <Animated.View style={[styles.indicator, styles.likeIndicator, { opacity: likeOpacity }]}>
-        <Text style={[styles.indicatorText, { color: colors.online }]}>LIKE</Text>
+        <Text style={[styles.indicatorText, { color: "#22C55E" }]}>LIKE</Text>
       </Animated.View>
 
-      {/* NOPE indicator */}
       <Animated.View style={[styles.indicator, styles.nopeIndicator, { opacity: nopeOpacity }]}>
-        <Text style={[styles.indicatorText, { color: colors.accent }]}>NOPE</Text>
+        <Text style={[styles.indicatorText, { color: "#FF4B6E" }]}>NOPE</Text>
       </Animated.View>
 
       <View style={styles.content}>
-        <Text style={styles.name}>
-          {profile.name}, {profile.age}
-        </Text>
-        <Text style={styles.bio} numberOfLines={2}>
-          {profile.bio}
-        </Text>
+        <Text style={styles.bio}>{profile.bio}</Text>
         <View style={styles.tags}>
-          <InterestTags tags={profile.interests} variant="light" />
+          {profile.interests.map((tag) => (
+            <View key={tag} style={styles.tag}>
+              <Text style={styles.tagText}>{tag}</Text>
+            </View>
+          ))}
         </View>
       </View>
     </Animated.View>
@@ -131,15 +121,16 @@ export function ProfileCard({ profile, onLike, onPass, isTop }: ProfileCardProps
 
 const styles = StyleSheet.create({
   card: {
-    width: SCREEN_WIDTH - 32,
+    width: SCREEN_WIDTH - 24,
     height: CARD_HEIGHT,
+    borderRadius: 22,
     overflow: "hidden",
     position: "absolute",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.18,
-    shadowRadius: 20,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
+    elevation: 10,
   },
   photo: {
     width: "100%",
@@ -152,32 +143,43 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: "60%",
+    height: "70%",
   },
   content: {
     position: "absolute",
-    bottom: 20,
+    bottom: 22,
     left: 20,
     right: 20,
-  },
-  name: {
-    color: "#FFFFFF",
-    fontSize: 26,
-    fontFamily: "Inter_700Bold",
-    marginBottom: 4,
+    gap: 12,
   },
   bio: {
-    color: "rgba(255,255,255,0.85)",
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    marginBottom: 12,
+    color: "#FFFFFF",
+    fontSize: 30,
+    fontFamily: "Inter_700Bold",
+    lineHeight: 36,
+    letterSpacing: -0.3,
   },
   tags: {
-    marginLeft: -4,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  tag: {
+    backgroundColor: "rgba(255,255,255,0.22)",
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+  },
+  tagText: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontFamily: "Inter_500Medium",
   },
   indicator: {
     position: "absolute",
-    top: 40,
+    top: 36,
     padding: 10,
     borderWidth: 3,
     borderRadius: 8,
@@ -193,7 +195,7 @@ const styles = StyleSheet.create({
     transform: [{ rotate: "15deg" }],
   },
   indicatorText: {
-    fontSize: 28,
+    fontSize: 26,
     fontFamily: "Inter_700Bold",
     letterSpacing: 2,
   },

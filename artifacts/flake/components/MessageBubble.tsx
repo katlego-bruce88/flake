@@ -10,102 +10,137 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { Message } from "@/types";
 import { Avatar } from "./Avatar";
-import { useColors } from "@/hooks/useColors";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const WAVEFORM_BARS = [12, 20, 16, 28, 18, 24, 14, 30, 20, 16, 22, 18, 26, 14];
+const p1 = require("@/assets/images/profile1.png");
+const p2 = require("@/assets/images/profile2.png");
+const p3 = require("@/assets/images/profile3.png");
+
+const WAVEFORM = [6, 14, 10, 22, 16, 28, 12, 24, 18, 10, 20, 14, 26, 10, 18, 22, 8, 16];
 
 interface MessageBubbleProps {
   message: Message;
   onLike: () => void;
 }
 
-function VoiceMessage({ colors }: { colors: ReturnType<typeof useColors> }) {
+function VoiceBubble({ isMe }: { isMe: boolean }) {
   return (
-    <View style={[styles.voiceBubble, { backgroundColor: colors.secondary }]}>
-      <TouchableOpacity style={[styles.playBtn, { backgroundColor: colors.foreground }]}>
-        <Ionicons name="play" size={14} color={colors.background} />
+    <View style={[styles.voicePill, isMe && styles.voicePillMe]}>
+      <TouchableOpacity style={styles.playCircle}>
+        <Ionicons name="play" size={13} color="#111111" />
       </TouchableOpacity>
       <View style={styles.waveform}>
-        {WAVEFORM_BARS.map((h, i) => (
+        {WAVEFORM.map((h, i) => (
           <View
             key={i}
             style={[
               styles.bar,
               {
                 height: h,
-                backgroundColor: i < 8 ? colors.foreground : colors.mutedForeground,
-                opacity: i < 8 ? 1 : 0.5,
+                backgroundColor: i < 10 ? "#CCCCCC" : "#555555",
               },
             ]}
           />
         ))}
       </View>
-      <Text style={[styles.voiceDuration, { color: colors.mutedForeground }]}>2:19</Text>
+      <Text style={styles.voiceDuration}>2:19</Text>
     </View>
   );
 }
 
-function ImageMessage({ colors, photo }: { colors: ReturnType<typeof useColors>; photo: any }) {
+function ImageCardBubble({ participants }: { participants: typeof p1[] }) {
   return (
-    <Image
-      source={photo}
-      style={[styles.imageMessage, { borderRadius: colors.radius - 4 }]}
-    />
+    <View style={styles.imageCard}>
+      <Text style={styles.imageCardCaption}>Here's what I created:</Text>
+      <View style={styles.imageGrid}>
+        <Image source={p1} style={styles.gridPhoto} />
+        <Image source={p2} style={styles.gridPhoto} />
+      </View>
+      <View style={styles.imageCardFooter}>
+        <View style={styles.imageCardAvatars}>
+          {[p2, p3, p1].map((src, i) => (
+            <Image
+              key={i}
+              source={src}
+              style={[styles.footerAvatar, { marginLeft: i === 0 ? 0 : -8, zIndex: 3 - i }]}
+            />
+          ))}
+          <Ionicons name="flame" size={16} color="#FF6247" style={{ marginLeft: 6 }} />
+        </View>
+        <View style={styles.reactionBtns}>
+          <TouchableOpacity style={styles.reactionBtn}>
+            <Ionicons name="thumbs-up" size={18} color="#111111" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.reactionBtn}>
+            <Ionicons name="thumbs-down" size={18} color="#AAAAAA" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 }
 
 export function MessageBubble({ message, onLike }: MessageBubbleProps) {
-  const colors = useColors();
   const isMe = message.senderId === "me";
-  const p1 = require("@/assets/images/profile1.png");
-  const p2 = require("@/assets/images/profile2.png");
 
   return (
     <View style={[styles.row, isMe && styles.rowMe]}>
       {!isMe && (
-        <Avatar photo={message.senderPhoto} size={32} style={styles.avatar} />
+        <Avatar photo={message.senderPhoto} size={30} style={styles.avatar} />
       )}
-      <View style={[styles.bubbleWrapper, isMe && styles.bubbleWrapperMe]}>
+
+      <View style={[styles.wrapper, isMe && styles.wrapperMe]}>
         {message.type === "text" && (
-          <View
-            style={[
-              styles.bubble,
-              {
-                backgroundColor: isMe ? colors.primary : colors.secondary,
-                borderRadius: colors.radius,
-                borderBottomRightRadius: isMe ? 4 : colors.radius,
-                borderBottomLeftRadius: isMe ? colors.radius : 4,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.bubbleText,
-                { color: isMe ? colors.primaryForeground : colors.foreground },
-              ]}
-            >
-              {message.content}
-            </Text>
-          </View>
-        )}
-        {message.type === "voice" && <VoiceMessage colors={colors} />}
-        {message.type === "image" && (
-          <ImageMessage colors={colors} photo={isMe ? p1 : p2} />
+          <>
+            <View style={[styles.textBubble, isMe ? styles.textBubbleMe : styles.textBubbleThem]}>
+              <Text style={[styles.textContent, isMe && styles.textContentMe]}>
+                {message.content}
+              </Text>
+            </View>
+            <View style={[styles.meta, isMe && styles.metaMe]}>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
+              {!isMe && (
+                <TouchableOpacity onPress={onLike}>
+                  <Ionicons
+                    name={message.liked ? "heart" : "heart-outline"}
+                    size={13}
+                    color={message.liked ? "#E53935" : "#BBBBBB"}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+          </>
         )}
 
-        <View style={[styles.meta, isMe && styles.metaMe]}>
-          <Text style={[styles.timestamp, { color: colors.mutedForeground }]}>
-            {message.timestamp}
-          </Text>
-          <TouchableOpacity onPress={onLike} style={styles.likeBtn}>
-            <Ionicons
-              name={message.liked ? "heart" : "heart-outline"}
-              size={14}
-              color={message.liked ? colors.accent : colors.mutedForeground}
+        {message.type === "voice" && (
+          <>
+            <VoiceBubble isMe={isMe} />
+            <View style={[styles.meta, isMe && styles.metaMe]}>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
+            </View>
+          </>
+        )}
+
+        {message.type === "imagecard" && (
+          <>
+            <ImageCardBubble participants={[]} />
+            <View style={[styles.meta, isMe && styles.metaMe]}>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
+            </View>
+          </>
+        )}
+
+        {message.type === "image" && (
+          <>
+            <Image
+              source={p2}
+              style={styles.singleImage}
             />
-          </TouchableOpacity>
-        </View>
+            <View style={[styles.meta, isMe && styles.metaMe]}>
+              <Text style={styles.timestamp}>{message.timestamp}</Text>
+            </View>
+          </>
+        )}
       </View>
     </View>
   );
@@ -115,44 +150,62 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "flex-end",
-    marginVertical: 4,
-    paddingHorizontal: 16,
+    marginVertical: 3,
+    paddingHorizontal: 14,
     gap: 8,
   },
   rowMe: {
     flexDirection: "row-reverse",
   },
   avatar: {
-    marginBottom: 18,
+    marginBottom: 20,
   },
-  bubbleWrapper: {
-    maxWidth: SCREEN_WIDTH * 0.68,
+  wrapper: {
+    maxWidth: SCREEN_WIDTH * 0.72,
   },
-  bubbleWrapperMe: {
+  wrapperMe: {
     alignItems: "flex-end",
   },
-  bubble: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+
+  textBubble: {
+    paddingHorizontal: 16,
+    paddingVertical: 11,
+    borderRadius: 20,
   },
-  bubbleText: {
+  textBubbleThem: {
+    backgroundColor: "#FFFFFF",
+    borderBottomLeftRadius: 6,
+  },
+  textBubbleMe: {
+    backgroundColor: "#1E1E1E",
+    borderBottomRightRadius: 6,
+  },
+  textContent: {
     fontSize: 15,
     fontFamily: "Inter_400Regular",
+    color: "#111111",
     lineHeight: 21,
   },
-  voiceBubble: {
+  textContentMe: {
+    color: "#FFFFFF",
+  },
+
+  voicePill: {
     flexDirection: "row",
     alignItems: "center",
     gap: 10,
+    backgroundColor: "#1A1A1A",
+    borderRadius: 30,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    borderRadius: 18,
-    minWidth: 220,
+    minWidth: 240,
   },
-  playBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  voicePillMe: {},
+  playCircle: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -167,18 +220,73 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   voiceDuration: {
+    color: "#BBBBBB",
     fontSize: 12,
     fontFamily: "Inter_400Regular",
   },
-  imageMessage: {
-    width: SCREEN_WIDTH * 0.55,
-    height: SCREEN_WIDTH * 0.4,
+
+  imageCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    overflow: "hidden",
+    paddingTop: 14,
+    paddingHorizontal: 14,
+    paddingBottom: 0,
+    width: SCREEN_WIDTH * 0.72,
+  },
+  imageCardCaption: {
+    fontSize: 14,
+    fontFamily: "Inter_400Regular",
+    color: "#111111",
+    marginBottom: 10,
+  },
+  imageGrid: {
+    flexDirection: "row",
+    gap: 4,
+  },
+  gridPhoto: {
+    flex: 1,
+    height: 110,
+    borderRadius: 10,
     resizeMode: "cover",
   },
+  imageCardFooter: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+  },
+  imageCardAvatars: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  footerAvatar: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
+    borderColor: "#FFFFFF",
+    resizeMode: "cover",
+  },
+  reactionBtns: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  reactionBtn: {
+    padding: 2,
+  },
+
+  singleImage: {
+    width: SCREEN_WIDTH * 0.55,
+    height: 160,
+    borderRadius: 14,
+    resizeMode: "cover",
+  },
+
   meta: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
+    gap: 5,
     marginTop: 4,
     paddingHorizontal: 4,
   },
@@ -188,8 +296,6 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 11,
     fontFamily: "Inter_400Regular",
-  },
-  likeBtn: {
-    padding: 2,
+    color: "#AAAAAA",
   },
 });

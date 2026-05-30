@@ -96,8 +96,8 @@ const INITIAL_MESSAGES: Record<string, Message[]> = {
       senderPhoto: p2,
       type: "text",
       content: "Please provide more details about your request",
-      timestamp: "1:19 PM",
-      liked: false,
+      timestamp: "7:55 PM",
+      liked: true,
     },
     {
       id: "m2",
@@ -106,7 +106,7 @@ const INITIAL_MESSAGES: Record<string, Message[]> = {
       senderPhoto: p3,
       type: "voice",
       content: "2:19",
-      timestamp: "1:21 PM",
+      timestamp: "7:57 PM",
       liked: false,
     },
     {
@@ -114,29 +114,19 @@ const INITIAL_MESSAGES: Record<string, Message[]> = {
       senderId: "2",
       senderName: "Marcus",
       senderPhoto: p2,
-      type: "text",
+      type: "imagecard",
       content: "Here's what I created:",
-      timestamp: "1:22 PM",
+      timestamp: "7:59 PM",
       liked: false,
     },
     {
       id: "m4",
-      senderId: "2",
-      senderName: "Marcus",
-      senderPhoto: p2,
-      type: "image",
-      content: "",
-      timestamp: "1:27 PM",
-      liked: false,
-    },
-    {
-      id: "m5",
       senderId: "me",
       senderName: "You",
       senderPhoto: p3,
       type: "text",
       content: "I like it! Let's make in another style",
-      timestamp: "1:32 PM",
+      timestamp: "8:12 PM",
       liked: false,
     },
   ],
@@ -162,6 +152,18 @@ const INITIAL_MESSAGES: Record<string, Message[]> = {
       liked: false,
     },
   ],
+  "3": [
+    {
+      id: "m1",
+      senderId: "1",
+      senderName: "Jessica",
+      senderPhoto: p1,
+      type: "text",
+      content: "Golden hour was amazing today",
+      timestamp: "Yesterday",
+      liked: false,
+    },
+  ],
 };
 
 export const MOCK_CONVERSATIONS: Conversation[] = [
@@ -169,7 +171,7 @@ export const MOCK_CONVERSATIONS: Conversation[] = [
     id: "1",
     group: MOCK_GROUPS[0],
     lastMessage: "I like it! Let's make in another style",
-    lastTime: "1:32 PM",
+    lastTime: "8:12 PM",
     unread: 0,
     participants: [MOCK_PROFILES[0], MOCK_PROFILES[1], MOCK_PROFILES[2]],
   },
@@ -226,17 +228,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     online: true,
   };
 
-  const likeProfile = (id: string) => {
-    setLikedIds((prev) => new Set(prev).add(id));
-  };
-
-  const passProfile = (id: string) => {
-    setPassedIds((prev) => new Set(prev).add(id));
-  };
+  const likeProfile = (id: string) => setLikedIds((prev) => new Set(prev).add(id));
+  const passProfile = (id: string) => setPassedIds((prev) => new Set(prev).add(id));
 
   const sendMessage = (conversationId: string, content: string) => {
     const newMsg: Message = {
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      id: Date.now().toString(),
       senderId: "me",
       senderName: "You",
       senderPhoto: p3,

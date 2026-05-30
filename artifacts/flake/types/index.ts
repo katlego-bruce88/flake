@@ -14,8 +14,9 @@ export interface Message {
   senderId: string;
   senderName: string;
   senderPhoto: ReturnType<typeof require>;
-  type: "text" | "voice" | "image";
+  type: "text" | "voice" | "image" | "imagecard";
   content: string;
+  caption?: string;
   timestamp: string;
   liked: boolean;
 }

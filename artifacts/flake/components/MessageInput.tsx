@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   View,
+  Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
@@ -8,7 +9,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useColors } from "@/hooks/useColors";
 
 interface MessageInputProps {
   onSend: (text: string) => void;
@@ -16,9 +16,8 @@ interface MessageInputProps {
 
 export function MessageInput({ onSend }: MessageInputProps) {
   const [text, setText] = useState("");
-  const colors = useColors();
   const insets = useSafeAreaInsets();
-  const bottomPad = Platform.OS === "web" ? 34 : insets.bottom;
+  const bottomPad = Platform.OS === "web" ? 24 : insets.bottom;
 
   const handleSend = () => {
     const trimmed = text.trim();
@@ -31,44 +30,32 @@ export function MessageInput({ onSend }: MessageInputProps) {
     <View
       style={[
         styles.container,
-        {
-          backgroundColor: colors.background,
-          borderTopColor: colors.border,
-          paddingBottom: bottomPad + 8,
-        },
+        { paddingBottom: bottomPad + 10 },
       ]}
     >
-      <TouchableOpacity style={styles.attachBtn}>
-        <Ionicons name="add" size={24} color={colors.mutedForeground} />
+      <TouchableOpacity style={styles.plusBtn}>
+        <Text style={styles.plusText}>+</Text>
       </TouchableOpacity>
       <TextInput
-        style={[
-          styles.input,
-          {
-            backgroundColor: colors.secondary,
-            color: colors.foreground,
-            borderRadius: 24,
-          },
-        ]}
+        style={styles.input}
         value={text}
         onChangeText={setText}
         placeholder="Type your message..."
-        placeholderTextColor={colors.mutedForeground}
+        placeholderTextColor="#AAAAAA"
         multiline
         returnKeyType="default"
       />
       <TouchableOpacity
-        style={[
-          styles.sendBtn,
-          { backgroundColor: text.trim() ? "#2B7FFF" : colors.secondary },
-        ]}
+        style={[styles.sendBtn, { backgroundColor: text.trim() ? "#111111" : "#E0E0E0" }]}
         onPress={handleSend}
         disabled={!text.trim()}
+        activeOpacity={0.8}
       >
         <Ionicons
-          name="arrow-up"
-          size={20}
-          color={text.trim() ? "#FFFFFF" : colors.mutedForeground}
+          name="paper-plane"
+          size={17}
+          color={text.trim() ? "#FFFFFF" : "#999999"}
+          style={{ marginRight: -1, marginTop: -1 }}
         />
       </TouchableOpacity>
     </View>
@@ -78,30 +65,38 @@ export function MessageInput({ onSend }: MessageInputProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "flex-end",
-    paddingHorizontal: 12,
-    paddingTop: 10,
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
+    paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
-    gap: 8,
+    borderTopColor: "#EBEBEB",
+    gap: 10,
   },
-  attachBtn: {
-    width: 40,
-    height: 40,
+  plusBtn: {
+    width: 36,
+    height: 36,
     alignItems: "center",
     justifyContent: "center",
   },
+  plusText: {
+    fontSize: 26,
+    color: "#333333",
+    fontFamily: "Inter_300Light",
+    lineHeight: 30,
+  },
   input: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
     fontSize: 15,
     fontFamily: "Inter_400Regular",
+    color: "#111111",
     maxHeight: 120,
+    paddingVertical: 0,
   },
   sendBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: "center",
     justifyContent: "center",
   },

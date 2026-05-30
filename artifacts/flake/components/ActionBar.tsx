@@ -1,8 +1,8 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { useColors } from "@/hooks/useColors";
 
 interface ActionBarProps {
   onPass: () => void;
@@ -11,56 +11,53 @@ interface ActionBarProps {
   onLike: () => void;
 }
 
-export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarProps) {
-  const colors = useColors();
+const BTN_BG = "#1C1C1C";
 
-  const handlePress = (action: () => void, haptic: "light" | "medium" | "heavy") => {
-    Haptics.impactAsync(
-      haptic === "light"
-        ? Haptics.ImpactFeedbackStyle.Light
-        : haptic === "medium"
-        ? Haptics.ImpactFeedbackStyle.Medium
-        : Haptics.ImpactFeedbackStyle.Heavy
-    );
+export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarProps) {
+  const fire = (action: () => void, style: "Light" | "Medium" | "Heavy") => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle[style]);
     action();
   };
 
   return (
     <View style={styles.container}>
-      {/* Pass */}
       <TouchableOpacity
-        style={[styles.btn, styles.btnLg, { backgroundColor: colors.card, shadowColor: "#000" }]}
-        onPress={() => handlePress(onPass, "light")}
-        activeOpacity={0.8}
+        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        onPress={() => fire(onPass, "Light")}
+        activeOpacity={0.75}
       >
-        <Ionicons name="close" size={30} color="#888888" />
+        <Ionicons name="close" size={26} color="#FFFFFF" />
       </TouchableOpacity>
 
-      {/* Super Like */}
       <TouchableOpacity
-        style={[styles.btn, { backgroundColor: colors.card }]}
-        onPress={() => handlePress(onSuperLike, "medium")}
-        activeOpacity={0.8}
+        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        onPress={() => fire(onSuperLike, "Medium")}
+        activeOpacity={0.75}
       >
-        <Ionicons name="star" size={22} color={colors.gold} />
+        <Ionicons name="star" size={22} color="#FFFFFF" />
       </TouchableOpacity>
 
-      {/* Boost */}
       <TouchableOpacity
-        style={[styles.btn, { backgroundColor: "#2A2A2A" }]}
-        onPress={() => handlePress(onBoost, "medium")}
-        activeOpacity={0.8}
+        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        onPress={() => fire(onBoost, "Medium")}
+        activeOpacity={0.75}
       >
-        <Ionicons name="arrow-forward" size={22} color="#FFFFFF" />
+        <Ionicons name="arrow-redo" size={22} color="#FFFFFF" />
       </TouchableOpacity>
 
-      {/* Like */}
       <TouchableOpacity
-        style={[styles.btn, styles.btnLg, { backgroundColor: colors.accent }]}
-        onPress={() => handlePress(onLike, "heavy")}
+        style={styles.likeBtn}
+        onPress={() => fire(onLike, "Heavy")}
         activeOpacity={0.8}
       >
-        <Ionicons name="heart" size={30} color="#FFFFFF" />
+        <LinearGradient
+          colors={["#FF8A50", "#FF6247", "#FF4B6E"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.likeBtnGradient}
+        >
+          <Ionicons name="heart" size={26} color="#FFFFFF" />
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );
@@ -71,23 +68,34 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 16,
-    paddingVertical: 4,
+    gap: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
   },
   btn: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
     elevation: 4,
   },
-  btnLg: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+  likeBtn: {
+    shadowColor: "#FF6247",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 6,
+  },
+  likeBtnGradient: {
+    width: 112,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
