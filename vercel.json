@@ -1,7 +1,6 @@
 {
   "version": 2,
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @workspace/flake exec expo export --platform web",
+  "buildCommand": null,
   "outputDirectory": "artifacts/flake/dist",
   "framework": null,
   "rewrites": [
