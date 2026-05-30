@@ -1,0 +1,22 @@
+name: Deploy to Vercel
+on:
+  push:
+    branches: [main]
+env:
+  VERCEL_ORG_ID: team_lNkigHEZOgHWZpdJaFSiwA3e
+  VERCEL_PROJECT_ID: prj_y20btjWETtcHU1qh8GdTspamcS9C
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - run: npm install -g vercel@latest
+      - run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
