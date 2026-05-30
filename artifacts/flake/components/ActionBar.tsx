@@ -11,8 +11,6 @@ interface ActionBarProps {
   onLike: () => void;
 }
 
-const BTN_BG = "#1C1C1C";
-
 export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarProps) {
   const fire = (action: () => void, style: "Light" | "Medium" | "Heavy") => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle[style]);
@@ -22,7 +20,7 @@ export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarPro
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        style={styles.btn}
         onPress={() => fire(onPass, "Light")}
         activeOpacity={0.75}
       >
@@ -30,7 +28,7 @@ export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarPro
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        style={styles.btn}
         onPress={() => fire(onSuperLike, "Medium")}
         activeOpacity={0.75}
       >
@@ -38,7 +36,7 @@ export function ActionBar({ onPass, onSuperLike, onBoost, onLike }: ActionBarPro
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.btn, { backgroundColor: BTN_BG }]}
+        style={styles.btn}
         onPress={() => fire(onBoost, "Medium")}
         activeOpacity={0.75}
       >
@@ -68,9 +66,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 16,
+    gap: 4,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginHorizontal: 16,
+    marginBottom: 4,
+    backgroundColor: "#1C1C1C",
+    borderRadius: 40,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 6,
   },
   btn: {
     width: 56,
@@ -78,11 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.18,
-    shadowRadius: 8,
-    elevation: 4,
+    backgroundColor: "transparent",
   },
   likeBtn: {
     shadowColor: "#FF6247",
