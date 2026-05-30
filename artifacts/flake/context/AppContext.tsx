@@ -52,8 +52,8 @@ export const MOCK_GROUPS: Group[] = [
   {
     id: "1",
     name: "Peak Seekers",
-    members: 9,
-    online: 9,
+    members: 7,
+    online: 4,
     category: "Outdoor",
     description: "Hiking, climbing, and outdoor adventures with cool people",
     photo: p1,
@@ -169,7 +169,15 @@ const INITIAL_MESSAGES: Record<string, Message[]> = {
 export const MOCK_CONVERSATIONS: Conversation[] = [
   {
     id: "1",
-    group: MOCK_GROUPS[0],
+    group: {
+      id: "1",
+      name: "peak seekers",
+      members: 9,
+      online: 14,
+      category: "Outdoor",
+      description: "Hiking, climbing, and outdoor adventures with cool people",
+      photo: p1,
+    },
     lastMessage: "I like it! Let's make in another style",
     lastTime: "8:12 PM",
     unread: 0,
