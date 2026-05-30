@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": null,
+  "buildCommand": "cd artifacts/flake && npx expo export --platform web",
   "outputDirectory": "artifacts/flake/dist",
   "framework": null,
   "rewrites": [
