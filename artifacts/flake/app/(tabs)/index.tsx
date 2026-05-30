@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -47,7 +46,7 @@ export default function DiscoverScreen() {
         <TouchableOpacity style={styles.iconBtn}>
           <Ionicons name="menu" size={24} color="#111111" />
         </TouchableOpacity>
-        <Text style={styles.appName}>flake</Text>
+        <Text style={styles.appName}>friendlyhours</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconBtn}>
             <View style={styles.badge}>
@@ -89,7 +88,7 @@ export default function DiscoverScreen() {
         {active.length === 0 ? (
           <View style={styles.empty}>
             <Ionicons name="heart-dislike-outline" size={48} color="#CCCCCC" />
-            <Text style={styles.emptyTitle}>You've seen everyone!</Text>
+            <Text style={styles.emptyTitle}>{"You've seen everyone!"}</Text>
             <Text style={styles.emptyText}>Check back soon for more profiles</Text>
           </View>
         ) : (
@@ -144,13 +143,13 @@ export default function DiscoverScreen() {
             />
           ))}
           <View style={[styles.plusPill, { width: 28, height: 28 }]}>
-            <Text style={[styles.plusPillText, { fontSize: 10 }]}>+4</Text>
+            <Text style={[styles.plusPillText, { fontSize: 10 }]}>+{stripGroup.online}</Text>
           </View>
         </View>
         <View style={styles.stripInfo}>
           <Text style={styles.stripName}>{stripGroup.name}</Text>
           <View style={styles.stripMeta}>
-            <Ionicons name="people-outline" size={11} color="#888888" />
+            <Ionicons name="people-outline" size={11} color="rgba(255,255,255,0.5)" />
             <Text style={styles.stripCount}>{stripGroup.members} members</Text>
           </View>
         </View>
@@ -278,7 +277,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginBottom: 14,
     padding: 12,
-    backgroundColor: "#F0EFED",
+    backgroundColor: "#1C1C1C",
     borderRadius: 16,
     gap: 12,
   },
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
   stripName: {
     fontSize: 14,
     fontFamily: "Inter_600SemiBold",
-    color: "#111111",
+    color: "#FFFFFF",
   },
   stripMeta: {
     flexDirection: "row",
@@ -303,6 +302,6 @@ const styles = StyleSheet.create({
   stripCount: {
     fontSize: 12,
     fontFamily: "Inter_400Regular",
-    color: "#888888",
+    color: "rgba(255,255,255,0.55)",
   },
 });
