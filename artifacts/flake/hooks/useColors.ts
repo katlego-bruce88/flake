@@ -1,5 +1,2 @@
-import colors from "@/constants/colors";
-
-export function useColors() {
-  return { ...colors.light, radius: colors.radius };
-}
+// Re-export from new structured location
+export { useColors } from "@/src/hooks/useColors";

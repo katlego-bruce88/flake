@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,8 +13,7 @@ import { useApp } from "@/context/AppContext";
 import { ProfileCard } from "@/components/ProfileCard";
 import { ActionBar } from "@/components/ActionBar";
 import { Avatar } from "@/components/Avatar";
-
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+import { layout } from "@/src/constants/layout";
 
 export default function DiscoverScreen() {
   const insets = useSafeAreaInsets();
@@ -95,23 +93,11 @@ export default function DiscoverScreen() {
           <>
             {next && (
               <View style={styles.cardBehind}>
-                <ProfileCard
-                  key={next.id}
-                  profile={next}
-                  onLike={() => likeProfile(next.id)}
-                  onPass={() => passProfile(next.id)}
-                  isTop={false}
-                />
+                <ProfileCard profile={next} onLike={() => likeProfile(next.id)} onPass={() => passProfile(next.id)} isTop={false} />
               </View>
             )}
             {current && (
-              <ProfileCard
-                key={current.id}
-                profile={current}
-                onLike={() => likeProfile(current.id)}
-                onPass={() => passProfile(current.id)}
-                isTop
-              />
+              <ProfileCard profile={current} onLike={() => likeProfile(current.id)} onPass={() => passProfile(current.id)} isTop />
             )}
           </>
         )}
@@ -135,12 +121,7 @@ export default function DiscoverScreen() {
       >
         <View style={styles.stripAvatars}>
           {[profiles[0], profiles[1], profiles[2]].map((p, i) => (
-            <Avatar
-              key={p.id}
-              photo={p.photo}
-              size={30}
-              style={{ marginLeft: i === 0 ? 0 : -10, zIndex: 3 - i }}
-            />
+            <Avatar key={p.id} photo={p.photo} size={30} style={{ marginLeft: i === 0 ? 0 : -10, zIndex: 3 - i }} />
           ))}
           <View style={[styles.plusPill, { width: 28, height: 28 }]}>
             <Text style={[styles.plusPillText, { fontSize: 10 }]}>+{stripGroup.online}</Text>
@@ -159,149 +140,41 @@ export default function DiscoverScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: "#FAFAF9",
-  },
+  screen: { flex: 1, backgroundColor: "#FAFAF9" },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingBottom: 8,
+    flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+    paddingHorizontal: 16, paddingBottom: 8,
   },
-  iconBtn: {
-    width: 36,
-    height: 36,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  appName: {
-    fontSize: 22,
-    fontFamily: "Inter_700Bold",
-    color: "#111111",
-    letterSpacing: -0.5,
-  },
-  headerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-  },
-  badge: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: "#FF6247",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  badgeText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontFamily: "Inter_700Bold",
-  },
+  iconBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  appName: { fontSize: 22, fontFamily: "Inter_700Bold", color: "#111111", letterSpacing: -0.5 },
+  headerRight: { flexDirection: "row", alignItems: "center", gap: 2 },
+  badge: { width: 26, height: 26, borderRadius: 13, backgroundColor: "#FF6247", alignItems: "center", justifyContent: "center" },
+  badgeText: { color: "#FFFFFF", fontSize: 12, fontFamily: "Inter_700Bold" },
   groupHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    gap: 10,
+    flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingBottom: 10, gap: 10,
   },
-  avatarStack: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
+  avatarStack: { flexDirection: "row", alignItems: "center" },
   plusPill: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "#1C1C1C",
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: -12,
-    zIndex: 0,
+    width: 34, height: 34, borderRadius: 17, backgroundColor: "#1C1C1C",
+    alignItems: "center", justifyContent: "center", marginLeft: -12, zIndex: 0,
   },
-  plusPillText: {
-    color: "#FFFFFF",
-    fontSize: 11,
-    fontFamily: "Inter_600SemiBold",
-  },
-  groupHeaderInfo: {
-    flex: 1,
-    alignItems: "flex-end",
-  },
-  groupHeaderName: {
-    fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
-    color: "#111111",
-  },
-  groupHeaderMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    marginTop: 1,
-  },
-  groupHeaderCount: {
-    fontSize: 11,
-    fontFamily: "Inter_400Regular",
-    color: "#888888",
-  },
-  cardArea: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  cardBehind: {
-    transform: [{ scale: 0.95 }, { translateY: 14 }],
-    opacity: 0.6,
-  },
-  empty: {
-    alignItems: "center",
-    gap: 12,
-    paddingHorizontal: 40,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontFamily: "Inter_700Bold",
-    color: "#111111",
-  },
-  emptyText: {
-    fontSize: 14,
-    fontFamily: "Inter_400Regular",
-    color: "#888888",
-    textAlign: "center",
-  },
+  plusPillText: { color: "#FFFFFF", fontSize: 11, fontFamily: "Inter_600SemiBold" },
+  groupHeaderInfo: { flex: 1, alignItems: "flex-end" },
+  groupHeaderName: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#111111" },
+  groupHeaderMeta: { flexDirection: "row", alignItems: "center", gap: 3, marginTop: 1 },
+  groupHeaderCount: { fontSize: 11, fontFamily: "Inter_400Regular", color: "#888888" },
+  cardArea: { flex: 1, alignItems: "center", justifyContent: "center" },
+  cardBehind: { transform: [{ scale: 0.95 }, { translateY: 14 }], opacity: 0.6 },
+  empty: { alignItems: "center", gap: 12, paddingHorizontal: 40 },
+  emptyTitle: { fontSize: 20, fontFamily: "Inter_700Bold", color: "#111111" },
+  emptyText: { fontSize: 14, fontFamily: "Inter_400Regular", color: "#888888", textAlign: "center" },
   bottomStrip: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 16,
-    marginBottom: 14,
-    padding: 12,
-    backgroundColor: "#1C1C1C",
-    borderRadius: 16,
-    gap: 12,
+    flexDirection: "row", alignItems: "center", marginHorizontal: 16, marginBottom: 14,
+    padding: 12, backgroundColor: "#1C1C1C", borderRadius: 16, gap: 12,
   },
-  stripAvatars: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  stripInfo: {
-    flex: 1,
-  },
-  stripName: {
-    fontSize: 14,
-    fontFamily: "Inter_600SemiBold",
-    color: "#FFFFFF",
-  },
-  stripMeta: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    marginTop: 2,
-  },
-  stripCount: {
-    fontSize: 12,
-    fontFamily: "Inter_400Regular",
-    color: "rgba(255,255,255,0.55)",
-  },
+  stripAvatars: { flexDirection: "row", alignItems: "center" },
+  stripInfo: { flex: 1 },
+  stripName: { fontSize: 14, fontFamily: "Inter_600SemiBold", color: "#FFFFFF" },
+  stripMeta: { flexDirection: "row", alignItems: "center", gap: 3, marginTop: 2 },
+  stripCount: { fontSize: 12, fontFamily: "Inter_400Regular", color: "rgba(255,255,255,0.55)" },
 });
