@@ -12,7 +12,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Profile } from "@/types";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const CARD_HEIGHT = SCREEN_HEIGHT * 0.58;
+const CARD_HEIGHT = Math.min(SCREEN_HEIGHT * 0.48, 480);
 const SWIPE_THRESHOLD = 100;
 
 interface ProfileCardProps {
@@ -154,9 +154,9 @@ const styles = StyleSheet.create({
   },
   bio: {
     color: "#FFFFFF",
-    fontSize: 30,
+    fontSize: 24,
     fontFamily: "Inter_700Bold",
-    lineHeight: 36,
+    lineHeight: 28,
     letterSpacing: -0.3,
   },
   tags: {
