@@ -20,40 +20,37 @@ function TabBar({ state, descriptors, navigation }: any) {
   };
 
   return (
-    <View
-      style={[
-        styles.tabBar,
-        { paddingBottom: Platform.OS === "web" ? 10 : insets.bottom + 4 },
-      ]}
-    >
-      {state.routes.map((route: any, index: number) => {
-        const isFocused = state.index === index;
-        const icon = icons[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
+    <View style={[styles.outerWrap, { paddingBottom: Platform.OS === "web" ? 12 : insets.bottom + 8 }]}>
+      <View style={styles.tabBar}>
+        {state.routes.map((route: any, index: number) => {
+          const isFocused = state.index === index;
+          const icon = icons[route.name] ?? { active: "ellipse", inactive: "ellipse-outline" };
 
-        const onPress = () => {
-          const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
-          }
-        };
+          const onPress = () => {
+            const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
 
-        return (
-          <TouchableOpacity
-            key={route.key}
-            style={styles.tabItem}
-            onPress={onPress}
-            activeOpacity={0.7}
-          >
-            <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
-              <Ionicons
-                name={isFocused ? icon.active : icon.inactive}
-                size={22}
-                color={isFocused ? PRIMARY : INACTIVE}
-              />
-            </View>
-          </TouchableOpacity>
-        );
-      })}
+          return (
+            <TouchableOpacity
+              key={route.key}
+              style={styles.tabItem}
+              onPress={onPress}
+              activeOpacity={0.7}
+            >
+              <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
+                <Ionicons
+                  name={isFocused ? icon.active : icon.inactive}
+                  size={22}
+                  color={isFocused ? "#FFFFFF" : INACTIVE}
+                />
+              </View>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 }
@@ -74,11 +71,21 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  outerWrap: {
+    backgroundColor: "transparent",
+    paddingHorizontal: 16,
+  },
   tabBar: {
     flexDirection: "row",
     backgroundColor: TAB_BG,
-    paddingTop: 10,
+    paddingVertical: 8,
     borderTopWidth: 0,
+    borderRadius: 36,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
   },
   tabItem: {
     flex: 1,
@@ -93,6 +100,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
   iconWrapActive: {
-    backgroundColor: "rgba(255,98,71,0.15)",
+    backgroundColor: PRIMARY,
   },
 });
